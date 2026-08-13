@@ -1,0 +1,6 @@
+name: ClanSystem
+version: '1.0-SNAPSHOT'
+main: com.discepolo.clanSystem.ClanSystem
+api-version: '1.21'
+author: gdif
+description: Gestione di clan con sistema di territori.
