@@ -1,6 +1,11 @@
 name: ClanSystem
 version: '1.0-SNAPSHOT'
-main: com.discepolo.clanSystem.ClanSystem
+main: com.discepolo.clansystem.ClanSystem
 api-version: '1.21'
 author: gdif
 description: Gestione di clan con sistema di territori.
+commands:
+  clan:
+    description: Comando principale del sistema clan
+    usage: /clan
+    aliases: [cl]
