@@ -1,22 +1,27 @@
 package com.discepolo.clansystem;
 
 import com.discepolo.clansystem.command.ClanCommand;
-import com.discepolo.clansystem.command.sub.CreateCommand;
-import com.discepolo.clansystem.command.sub.InfoCommand;
+import com.discepolo.clansystem.command.sub.*;
 import com.discepolo.clansystem.manager.ClanManager;
+import com.discepolo.clansystem.manager.InviteManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ClanSystem extends JavaPlugin {
 
     private ClanManager clanManager;
+    private InviteManager inviteManager;
 
     @Override
     public void onEnable() {
         clanManager = new ClanManager();
+        inviteManager = new InviteManager();
 
         ClanCommand router = new ClanCommand();
         router.register(new CreateCommand(clanManager));
         router.register(new InfoCommand(clanManager));
+        router.register(new DisbandCommand(clanManager));
+        router.register(new InviteCommand(clanManager, inviteManager));
+        router.register(new JoinCommand(clanManager, inviteManager));
         getCommand("clan").setExecutor(router);
 
         getLogger().info("ClanSystem abilitato!");

@@ -51,4 +51,8 @@ public class Clan {
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    public void broadcastMessage(String message) {
+        getOnlineMembers().forEach(p -> p.sendMessage(message));
+    }
 }
