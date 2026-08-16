@@ -22,6 +22,8 @@ public final class ClanSystem extends JavaPlugin {
         router.register(new DisbandCommand(clanManager));
         router.register(new InviteCommand(clanManager, inviteManager));
         router.register(new JoinCommand(clanManager, inviteManager));
+        router.register(new LeaveCommand(clanManager));
+        router.register(new TransferCommand(clanManager));
         getCommand("clan").setExecutor(router);
 
         getLogger().info("ClanSystem abilitato!");

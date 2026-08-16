@@ -55,4 +55,11 @@ public class Clan {
     public void broadcastMessage(String message) {
         getOnlineMembers().forEach(p -> p.sendMessage(message));
     }
+
+    public ClanMember getMemberByName(String name) {
+        return members.values().stream()
+                .filter(m -> m.getLastKnownName().equalsIgnoreCase(name))
+                .findFirst()
+                .orElse(null);
+    }
 }
