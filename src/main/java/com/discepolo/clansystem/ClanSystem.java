@@ -1,6 +1,7 @@
 package com.discepolo.clansystem;
 
 import com.discepolo.clansystem.command.ClanCommand;
+import com.discepolo.clansystem.command.sub.CreateCommand;
 import com.discepolo.clansystem.manager.ClanManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,6 +14,7 @@ public final class ClanSystem extends JavaPlugin {
         clanManager = new ClanManager();
 
         ClanCommand router = new ClanCommand();
+        router.register(new CreateCommand(clanManager));
         getCommand("clan").setExecutor(router);
 
         getLogger().info("ClanSystem abilitato!");
