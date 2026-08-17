@@ -1,4 +1,5 @@
 name: ClanSystem
+paper-plugin-remap: false
 version: '1.0-SNAPSHOT'
 main: com.discepolo.clansystem.ClanSystem
 api-version: '1.21'

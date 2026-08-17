@@ -2,6 +2,7 @@ package com.discepolo.clansystem;
 
 import com.discepolo.clansystem.command.ClanCommand;
 import com.discepolo.clansystem.command.sub.*;
+import com.discepolo.clansystem.database.DatabaseManager;
 import com.discepolo.clansystem.listener.ClanChatListener;
 import com.discepolo.clansystem.manager.ChatManager;
 import com.discepolo.clansystem.manager.ClanManager;
@@ -14,9 +15,19 @@ public final class ClanSystem extends JavaPlugin {
     private ClanManager clanManager;
     private InviteManager inviteManager;
     private ChatManager chatManager;
+    private DatabaseManager databaseManager;
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
+        databaseManager = new DatabaseManager(this);
+        if (!databaseManager.connect()) {
+            getLogger().severe("Plugin disabilitato: impossibile raggiungere il database.");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         clanManager = new ClanManager();
         inviteManager = new InviteManager();
         chatManager = new ChatManager();
@@ -55,6 +66,7 @@ public final class ClanSystem extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (databaseManager != null) databaseManager.close();
         getLogger().info("ClanSystem disabilitato.");
     }
 
