@@ -42,7 +42,9 @@ public class ClanCommand implements CommandExecutor {
     private void sendHelp(Player player) {
         player.sendMessage("§6=== ClanSystem ===");
         for (SubCommand sub : subCommands.values()) {
-            player.sendMessage("§e" + sub.getUsage());
+            if (sub.getName()!="join") {
+                player.sendMessage("§e" + sub.getUsage());
+            }
         }
     }
 }
