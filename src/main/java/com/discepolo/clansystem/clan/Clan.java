@@ -53,7 +53,7 @@ public class Clan {
     }
 
     public void broadcastMessage(String message) {
-        getOnlineMembers().forEach(p -> p.sendMessage(message));
+        getOnlineMembers().forEach(p -> p.sendMessage("§a§l["+tag+"]§e§r "+message));
     }
 
     public ClanMember getMemberByName(String name) {

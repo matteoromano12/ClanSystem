@@ -22,7 +22,7 @@ public class LeaveCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan leave";
+        return "/clan leave - Esci dal clan";
     }
 
     @Override

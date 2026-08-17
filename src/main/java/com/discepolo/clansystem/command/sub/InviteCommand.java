@@ -31,7 +31,7 @@ public class InviteCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan invite <player>";
+        return "/clan invite <player> - Invita giocatore";
     }
 
     @Override

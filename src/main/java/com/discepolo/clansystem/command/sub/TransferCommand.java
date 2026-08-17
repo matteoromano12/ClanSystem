@@ -33,7 +33,7 @@ public class TransferCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan transfer <player>";
+        return "/clan transfer <player> - Trasferisci il clan a un altro membro (solo leader)";
     }
 
     @Override

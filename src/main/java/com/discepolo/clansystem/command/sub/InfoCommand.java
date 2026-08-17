@@ -24,7 +24,7 @@ public class InfoCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan info [clan]";
+        return "/clan info [clan] - Info clan";
     }
 
     @Override

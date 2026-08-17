@@ -19,7 +19,7 @@ public class CreateCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan create <nome> <tag>";
+        return "/clan create <nome> <tag> - Crea nuovo clan";
     }
 
     @Override

@@ -30,7 +30,7 @@ public class DisbandCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan disband";
+        return "/clan disband - Sciogli clan (solo leader)";
     }
 
     @Override

@@ -8,22 +8,22 @@ import com.discepolo.clansystem.manager.ClanManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class KickCommand implements SubCommand {
+public class PromoteCommand implements SubCommand {
 
     private final ClanManager clanManager;
 
-    public KickCommand(ClanManager clanManager) {
+    public PromoteCommand(ClanManager clanManager) {
         this.clanManager = clanManager;
     }
 
     @Override
     public String getName() {
-        return "kick";
+        return "promote";
     }
 
     @Override
     public String getUsage() {
-        return "/clan kick <player> - Espelli membro";
+        return "/clan promote/demote <player> - Gestisci i ruoli";
     }
 
     @Override
@@ -39,6 +39,12 @@ public class KickCommand implements SubCommand {
             return;
         }
 
+        ClanMember self = clan.getMember(player.getUniqueId());
+        if (self.getRole() != ClanRole.LEADER) {
+            player.sendMessage("§cSolo il leader può promuovere.");
+            return;
+        }
+
         ClanMember target = clan.getMemberByName(args[0]);
         if (target == null) {
             player.sendMessage("§c" + args[0] + " non è un membro del tuo clan.");
@@ -46,26 +52,26 @@ public class KickCommand implements SubCommand {
         }
 
         if (target.getUuid().equals(player.getUniqueId())) {
-            player.sendMessage("§cNon puoi espellere te stesso. Usa /clan leave.");
+            player.sendMessage("§cSei il leader, non puoi promuovere te stesso.");
             return;
         }
 
-        ClanMember self = clan.getMember(player.getUniqueId());
-        if (self.getRole().getWeight() <= target.getRole().getWeight()) {
-            player.sendMessage("§cNon puoi espellere §e" + target.getLastKnownName()
-                    + "§c: il suo rango (§e" + target.getRole().getDisplayName()
-                    + "§c) non è inferiore al tuo.");
+        if (target.getRole() == ClanRole.OFFICER) {
+            player.sendMessage("§c" + target.getLastKnownName()
+                    + " è già Officer. Per promouvero a leader, usa /clan transfer.");
             return;
         }
+
+        ClanRole newRole = target.getRole().next();
+        target.setRole(newRole);
 
         String targetName = target.getLastKnownName();
-        clanManager.removePlayerFromClan(clan, target.getUuid());
-        clan.broadcastMessage("§e" + targetName + " §cè stato espulso dal clan da §e"
-                + player.getName() + "§c.");
+        clan.broadcastMessage("§e" + targetName + " §aè stato promosso a §6"
+                + newRole.getDisplayName() + "§a!");
 
         Player targetPlayer = Bukkit.getPlayer(target.getUuid());
         if (targetPlayer != null) {
-            targetPlayer.sendMessage("§cSei stato espulso dal clan §e" + clan.getName() + "§c.");
+            targetPlayer.sendMessage("§aSei stato promosso a §6" + newRole.getDisplayName() + "§a!");
         }
     }
 }

@@ -24,4 +24,18 @@ public enum ClanRole {
     public boolean isAtLeast(ClanRole other) {
         return this.weight >= other.weight;
     }
+
+    public ClanRole next() {
+        return switch (this) {
+            case MEMBER -> OFFICER;
+            case OFFICER, LEADER -> LEADER;
+        };
+    }
+
+    public ClanRole previous() {
+        return switch (this) {
+            case LEADER -> OFFICER;
+            case OFFICER, MEMBER -> MEMBER;
+        };
+    }
 }
