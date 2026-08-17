@@ -9,3 +9,7 @@ commands:
     description: Comando principale del sistema clan
     usage: /clan
     aliases: [cl]
+  clanchat:
+    description: Scorciatoia per la chat del clan
+    usage: /cc [messaggio]
+    aliases: [cc]
