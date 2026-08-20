@@ -5,3 +5,7 @@ database:
   user: clansystem
   password: "clanpass"
   pool-size: 8
+claims:
+  max-per-clan: 6
+  build-role: LEADER
+  interact-role: MEMBER

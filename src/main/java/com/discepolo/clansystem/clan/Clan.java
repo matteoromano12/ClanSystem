@@ -10,6 +10,7 @@ public class Clan {
     private final String name;
     private final String tag;
     private final Map<UUID, ClanMember> members = new HashMap<>();
+    private final Set<ClaimedChunk> claims = new HashSet<>();
 
     public Clan(String name, String tag) {
         this.name = name;
@@ -61,5 +62,21 @@ public class Clan {
                 .filter(m -> m.getLastKnownName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Set<ClaimedChunk> getClaims() {
+        return claims;
+    }
+
+    public void addClaim(ClaimedChunk chunk) {
+        claims.add(chunk);
+    }
+
+    public void removeClaim(ClaimedChunk chunk) {
+        claims.remove(chunk);
+    }
+
+    public int getClaimCount() {
+        return claims.size();
     }
 }

@@ -5,6 +5,7 @@ import com.discepolo.clansystem.command.sub.*;
 import com.discepolo.clansystem.database.DatabaseManager;
 import com.discepolo.clansystem.listener.ClanChatListener;
 import com.discepolo.clansystem.manager.ChatManager;
+import com.discepolo.clansystem.manager.ClaimManager;
 import com.discepolo.clansystem.manager.ClanManager;
 import com.discepolo.clansystem.manager.InviteManager;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ public final class ClanSystem extends JavaPlugin {
     private InviteManager inviteManager;
     private ChatManager chatManager;
     private DatabaseManager databaseManager;
+    private ClaimManager claimManager;
 
     @Override
     public void onEnable() {
@@ -28,13 +30,15 @@ public final class ClanSystem extends JavaPlugin {
             return;
         }
 
+
         clanManager = new ClanManager();
         inviteManager = new InviteManager();
         chatManager = new ChatManager();
+        claimManager = new ClaimManager(getConfig().getInt("claims.max-per-clan", 6));
 
         ClanCommand router = new ClanCommand();
         router.register(new CreateCommand(clanManager));
-        router.register(new DisbandCommand(clanManager));
+        router.register(new DisbandCommand(clanManager, claimManager));
         router.register(new InviteCommand(clanManager, inviteManager));
         router.register(new JoinCommand(clanManager, inviteManager));
         router.register(new KickCommand(clanManager));
@@ -43,6 +47,8 @@ public final class ClanSystem extends JavaPlugin {
         router.register(new LeaveCommand(clanManager));
         router.register(new TransferCommand(clanManager));
         router.register(new InfoCommand(clanManager));
+        router.register(new ClaimCommand(clanManager, claimManager));
+        router.register(new UnclaimCommand(clanManager, claimManager));
 
         ChatCommand chatCommand = new ChatCommand(clanManager, chatManager);
         router.register(chatCommand);

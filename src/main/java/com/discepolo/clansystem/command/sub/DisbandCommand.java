@@ -5,6 +5,7 @@ import com.discepolo.clansystem.clan.ClanMember;
 import com.discepolo.clansystem.clan.ClanRole;
 import com.discepolo.clansystem.command.SubCommand;
 import com.discepolo.clansystem.manager.ClanManager;
+import com.discepolo.clansystem.manager.ClaimManager;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -16,11 +17,13 @@ public class DisbandCommand implements SubCommand {
     private static final long CONFIRM_TIMEOUT_MS = 30_000;
 
     private final ClanManager clanManager;
+    private final ClaimManager claimManager;
 
     private final Map<UUID, Long> pendingConfirmations = new HashMap<>();
 
-    public DisbandCommand(ClanManager clanManager) {
+    public DisbandCommand(ClanManager clanManager, ClaimManager claimManager) {
         this.clanManager = clanManager;
+        this.claimManager = claimManager;
     }
 
     @Override
@@ -61,6 +64,7 @@ public class DisbandCommand implements SubCommand {
         pendingConfirmations.remove(player.getUniqueId());
         String name = clan.getName();
         clan.broadcastMessage("§7Il clan §e" + name + " §7è stato disbandato.");
+        claimManager.unclaimAll(clan);
         clanManager.disbandClan(clan);
     }
 }
