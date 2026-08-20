@@ -1,8 +1,10 @@
 package com.discepolo.clansystem;
 
+import com.discepolo.clansystem.clan.ClanRole;
 import com.discepolo.clansystem.command.ClanCommand;
 import com.discepolo.clansystem.command.sub.*;
 import com.discepolo.clansystem.database.DatabaseManager;
+import com.discepolo.clansystem.listener.ClaimProtectionListener;
 import com.discepolo.clansystem.listener.ClanChatListener;
 import com.discepolo.clansystem.manager.ChatManager;
 import com.discepolo.clansystem.manager.ClaimManager;
@@ -36,6 +38,9 @@ public final class ClanSystem extends JavaPlugin {
         chatManager = new ChatManager();
         claimManager = new ClaimManager(getConfig().getInt("claims.max-per-clan", 6));
 
+        ClanRole buildRole = parseRole(getConfig().getString("claims.build-role", "LEADER"), ClanRole.LEADER);
+        ClanRole interactRole = parseRole(getConfig().getString("claims.interact-role", "MEMBER"), ClanRole.MEMBER);
+
         ClanCommand router = new ClanCommand();
         router.register(new CreateCommand(clanManager));
         router.register(new DisbandCommand(clanManager, claimManager));
@@ -66,8 +71,19 @@ public final class ClanSystem extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(
                 new ClanChatListener(clanManager, chatManager), this);
+        getServer().getPluginManager().registerEvents(
+                new ClaimProtectionListener(claimManager, buildRole, interactRole), this);
 
         getLogger().info("ClanSystem abilitato!");
+    }
+
+    private ClanRole parseRole(String value, ClanRole fallback) {
+        try {
+            return ClanRole.valueOf(value.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            getLogger().warning("Ruolo non valido nel config: " + value + ". Uso " + fallback + ".");
+            return fallback;
+        }
     }
 
     @Override
