@@ -6,10 +6,8 @@ import com.discepolo.clansystem.command.sub.*;
 import com.discepolo.clansystem.database.DatabaseManager;
 import com.discepolo.clansystem.listener.ClaimProtectionListener;
 import com.discepolo.clansystem.listener.ClanChatListener;
-import com.discepolo.clansystem.manager.ChatManager;
-import com.discepolo.clansystem.manager.ClaimManager;
-import com.discepolo.clansystem.manager.ClanManager;
-import com.discepolo.clansystem.manager.InviteManager;
+import com.discepolo.clansystem.listener.TeleportCancelListener;
+import com.discepolo.clansystem.manager.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +18,7 @@ public final class ClanSystem extends JavaPlugin {
     private ChatManager chatManager;
     private DatabaseManager databaseManager;
     private ClaimManager claimManager;
+    private TeleportManager teleportManager;
 
     @Override
     public void onEnable() {
@@ -37,6 +36,7 @@ public final class ClanSystem extends JavaPlugin {
         inviteManager = new InviteManager();
         chatManager = new ChatManager();
         claimManager = new ClaimManager(getConfig().getInt("claims.max-per-clan", 6));
+        teleportManager = new TeleportManager();
 
         ClanRole buildRole = parseRole(getConfig().getString("claims.build-role", "LEADER"), ClanRole.LEADER);
         ClanRole interactRole = parseRole(getConfig().getString("claims.interact-role", "MEMBER"), ClanRole.MEMBER);
@@ -54,6 +54,8 @@ public final class ClanSystem extends JavaPlugin {
         router.register(new InfoCommand(clanManager));
         router.register(new ClaimCommand(clanManager, claimManager));
         router.register(new UnclaimCommand(clanManager, claimManager));
+        router.register(new SetHomeCommand(clanManager, claimManager));
+        router.register(new HomeCommand(this, clanManager, teleportManager));
 
         ChatCommand chatCommand = new ChatCommand(clanManager, chatManager);
         router.register(chatCommand);
@@ -73,6 +75,8 @@ public final class ClanSystem extends JavaPlugin {
                 new ClanChatListener(clanManager, chatManager), this);
         getServer().getPluginManager().registerEvents(
                 new ClaimProtectionListener(claimManager, buildRole, interactRole), this);
+        getServer().getPluginManager().registerEvents(
+                new TeleportCancelListener(teleportManager), this);
 
         getLogger().info("ClanSystem abilitato!");
     }

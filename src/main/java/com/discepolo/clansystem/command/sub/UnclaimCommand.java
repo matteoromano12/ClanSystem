@@ -59,5 +59,10 @@ public class UnclaimCommand implements SubCommand {
         player.sendMessage("§aTerritorio unclaimato. §7(" + clan.getClaimCount()
                 + "/" + claimManager.getMaxClaimsPerClan() + ")");
         clan.broadcastMessage("§e" + player.getName() + " §7ha unclaimato un territorio.");
+        if (clan.hasHome() && ClaimedChunk.fromChunk(clan.getHome().getChunk()).equals(chunk)) {
+            clan.setHome(null);
+            player.sendMessage("§eLa home del clan era in questo territorio ed è stata rimossa.");
+            clan.broadcastMessage("§7La home del clan è stata rimossa (territorio unclaimato).");
+        }
     }
 }

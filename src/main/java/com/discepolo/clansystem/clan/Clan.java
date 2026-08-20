@@ -1,6 +1,7 @@
 package com.discepolo.clansystem.clan;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -11,6 +12,7 @@ public class Clan {
     private final String tag;
     private final Map<UUID, ClanMember> members = new HashMap<>();
     private final Set<ClaimedChunk> claims = new HashSet<>();
+    private Location home;
 
     public Clan(String name, String tag) {
         this.name = name;
@@ -79,4 +81,10 @@ public class Clan {
     public int getClaimCount() {
         return claims.size();
     }
+
+    public Location getHome() { return home; }
+
+    public void setHome(Location home) { this.home = home; }
+
+    public boolean hasHome() { return home != null; }
 }
