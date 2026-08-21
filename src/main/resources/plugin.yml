@@ -5,6 +5,7 @@ main: com.discepolo.clansystem.ClanSystem
 api-version: '1.21'
 author: gdif
 description: Gestione di clan con sistema di territori.
+softdepend: [PlaceholderAPI]
 commands:
   clan:
     description: Comando principale del sistema clan

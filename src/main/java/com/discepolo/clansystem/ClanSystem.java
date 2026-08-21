@@ -10,6 +10,7 @@ import com.discepolo.clansystem.listener.ClaimProtectionListener;
 import com.discepolo.clansystem.listener.ClanChatListener;
 import com.discepolo.clansystem.listener.TeleportCancelListener;
 import com.discepolo.clansystem.manager.*;
+import com.discepolo.clansystem.placeholder.ClanPlaceholders;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -93,6 +94,12 @@ public final class ClanSystem extends JavaPlugin {
                 new TeleportCancelListener(teleportManager), this);
 
         getLogger().info("ClanSystem abilitato!");
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new ClanPlaceholders(this, clanManager).register();
+            getLogger().info("Placeholder registrati (PlaceholderAPI trovato).");
+        } else {
+            getLogger().info("PlaceholderAPI non trovato: placeholder non disponibili.");
+        }
     }
 
     private ClanRole parseRole(String value, ClanRole fallback) {
