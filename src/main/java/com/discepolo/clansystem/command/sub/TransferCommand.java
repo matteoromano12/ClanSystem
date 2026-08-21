@@ -83,8 +83,8 @@ public class TransferCommand implements SubCommand {
         }
 
         pending.remove(player.getUniqueId());
-        self.setRole(ClanRole.OFFICER);
-        target.setRole(ClanRole.LEADER);
+        clanManager.updateRole(self, ClanRole.OFFICER);
+        clanManager.updateRole(target, ClanRole.LEADER);
 
         String targetName = target.getLastKnownName();
         clan.broadcastMessage("§6Il clan è stato trasferito da §e" + player.getName()

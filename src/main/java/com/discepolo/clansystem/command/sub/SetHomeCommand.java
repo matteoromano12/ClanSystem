@@ -46,7 +46,7 @@ public class SetHomeCommand implements SubCommand {
             return;
         }
 
-        clan.setHome(player.getLocation());
+        clanManager.setHome(clan, player.getLocation());
         player.sendMessage("§aHome del clan impostata qui!");
         clan.broadcastMessage("§7La home del clan è stata aggiornata da §e" + player.getName() + "§7.");
     }

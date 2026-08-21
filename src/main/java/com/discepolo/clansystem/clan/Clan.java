@@ -8,11 +8,13 @@ import java.util.*;
 
 public class Clan {
 
+    private int id = -1;
     private final String name;
     private final String tag;
     private final Map<UUID, ClanMember> members = new HashMap<>();
     private final Set<ClaimedChunk> claims = new HashSet<>();
     private Location home;
+    private final long createdAt = System.currentTimeMillis();
 
     public Clan(String name, String tag) {
         this.name = name;
@@ -87,4 +89,10 @@ public class Clan {
     public void setHome(Location home) { this.home = home; }
 
     public boolean hasHome() { return home != null; }
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
+
+    public long getCreatedAt() { return createdAt; }
 }

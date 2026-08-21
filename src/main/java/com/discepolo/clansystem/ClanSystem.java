@@ -3,6 +3,7 @@ package com.discepolo.clansystem;
 import com.discepolo.clansystem.clan.ClanRole;
 import com.discepolo.clansystem.command.ClanCommand;
 import com.discepolo.clansystem.command.sub.*;
+import com.discepolo.clansystem.database.ClanRepository;
 import com.discepolo.clansystem.database.DatabaseManager;
 import com.discepolo.clansystem.listener.ClaimProtectionListener;
 import com.discepolo.clansystem.listener.ClanChatListener;
@@ -19,6 +20,8 @@ public final class ClanSystem extends JavaPlugin {
     private DatabaseManager databaseManager;
     private ClaimManager claimManager;
     private TeleportManager teleportManager;
+    private ClanRepository clanRepository;
+
 
     @Override
     public void onEnable() {
@@ -32,10 +35,12 @@ public final class ClanSystem extends JavaPlugin {
         }
 
 
-        clanManager = new ClanManager();
+        clanRepository = new ClanRepository(databaseManager, getLogger());
+
+        clanManager = new ClanManager(this, clanRepository);
+        claimManager = new ClaimManager(this, clanRepository, getConfig().getInt("claims.max-per-clan", 6));
         inviteManager = new InviteManager();
         chatManager = new ChatManager();
-        claimManager = new ClaimManager(getConfig().getInt("claims.max-per-clan", 6));
         teleportManager = new TeleportManager();
 
         ClanRole buildRole = parseRole(getConfig().getString("claims.build-role", "LEADER"), ClanRole.LEADER);

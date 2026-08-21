@@ -63,7 +63,7 @@ public class PromoteCommand implements SubCommand {
         }
 
         ClanRole newRole = target.getRole().next();
-        target.setRole(newRole);
+        clanManager.updateRole(target, newRole);
 
         String targetName = target.getLastKnownName();
         clan.broadcastMessage("§e" + targetName + " §aè stato promosso a §6"
