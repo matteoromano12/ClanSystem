@@ -14,16 +14,17 @@ import java.util.UUID;
 
 public class DisbandCommand implements SubCommand {
 
-    private static final long CONFIRM_TIMEOUT_MS = 30_000;
+    private final long confirmTimeoutMs;
 
     private final ClanManager clanManager;
     private final ClaimManager claimManager;
 
     private final Map<UUID, Long> pendingConfirmations = new HashMap<>();
 
-    public DisbandCommand(ClanManager clanManager, ClaimManager claimManager) {
+    public DisbandCommand(ClanManager clanManager, ClaimManager claimManager, long confirmTimeoutMs) {
         this.clanManager = clanManager;
         this.claimManager = claimManager;
+        this.confirmTimeoutMs = confirmTimeoutMs;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class DisbandCommand implements SubCommand {
         Long firstAsk = pendingConfirmations.get(player.getUniqueId());
         long now = System.currentTimeMillis();
 
-        if (firstAsk == null || now - firstAsk > CONFIRM_TIMEOUT_MS) {
+        if (firstAsk == null || now - firstAsk > confirmTimeoutMs) {
             pendingConfirmations.put(player.getUniqueId(), now);
             player.sendMessage("§c⚠ Stai per disbandare §e" + clan.getName()
                     + "§c! L'azione è irreversibile.");

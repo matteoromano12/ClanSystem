@@ -10,7 +10,7 @@ import java.util.*;
 
 public class ClanCommand implements CommandExecutor, TabCompleter {
 
-    private final Map<String, SubCommand> subCommands = new HashMap<>();
+    private final Map<String, SubCommand> subCommands = new LinkedHashMap<>();
 
     public void register(SubCommand sub) {
         subCommands.put(sub.getName().toLowerCase(), sub);
@@ -41,9 +41,8 @@ public class ClanCommand implements CommandExecutor, TabCompleter {
     private void sendHelp(Player player) {
         player.sendMessage("§6=== ClanSystem ===");
         for (SubCommand sub : subCommands.values()) {
-            if (!Objects.equals(sub.getName(), "join") && !Objects.equals(sub.getName(), "demote") && !Objects.equals(sub.getName(), "unclaim") ) {
-                player.sendMessage("§e" + sub.getUsage());
-            }
+            if (sub.isHidden()) continue;
+            player.sendMessage("§e" + sub.getUsage());
         }
     }
 

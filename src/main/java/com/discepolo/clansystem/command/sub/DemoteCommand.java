@@ -65,7 +65,7 @@ public class DemoteCommand implements SubCommand {
         }
 
         ClanRole newRole = target.getRole().previous();
-        target.setRole(newRole);
+        clanManager.updateRole(target, newRole);
 
         String targetName = target.getLastKnownName();
         clan.broadcastMessage("§e" + targetName + " §cè stato degradato a §7"
@@ -90,5 +90,10 @@ public class DemoteCommand implements SubCommand {
                 .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
                 .sorted()
                 .toList();
+    }
+
+    @Override
+    public boolean isHidden() {
+        return true;
     }
 }

@@ -15,4 +15,8 @@ public interface SubCommand {
     default List<String> tabComplete(Player player, String[] args) {
         return List.of();
     }
+
+    default boolean isHidden() {
+        return false;
+    }
 }

@@ -2,14 +2,24 @@ package com.discepolo.clansystem.command.sub;
 
 import com.discepolo.clansystem.command.SubCommand;
 import com.discepolo.clansystem.manager.ClanManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class CreateCommand implements SubCommand {
 
     private final ClanManager clanManager;
 
-    public CreateCommand(ClanManager clanManager) {
+    private final int nameMinLength;
+    private final int nameMaxLength;
+    private final int tagMinLength;
+    private final int tagMaxLength;
+
+    public CreateCommand(ClanManager clanManager, FileConfiguration config) {
         this.clanManager = clanManager;
+        this.nameMinLength = config.getInt("clan.name-min-length", 3);
+        this.nameMaxLength = config.getInt("clan.name-max-length", 16);
+        this.tagMinLength = config.getInt("clan.tag-min-length", 2);
+        this.tagMaxLength = config.getInt("clan.tag-max-length", 5);
     }
 
     @Override
@@ -37,12 +47,14 @@ public class CreateCommand implements SubCommand {
             return;
         }
 
-        if (!name.matches("[a-zA-Z0-9]{3,16}")) {
-            player.sendMessage("§cNome non valido: 3-16 caratteri, solo lettere e numeri.");
+        if (!name.matches("[a-zA-Z0-9]{" + nameMinLength + "," + nameMaxLength + "}")) {
+            player.sendMessage("§cNome non valido: " + nameMinLength + "-" + nameMaxLength
+                    + " caratteri, solo lettere e numeri.");
             return;
         }
-        if (!tag.matches("[a-zA-Z0-9]{2,5}")) {
-            player.sendMessage("§cTag non valido: 2-5 caratteri, solo lettere e numeri.");
+        if (!tag.matches("[a-zA-Z0-9]{" + tagMinLength + "," + tagMaxLength + "}")) {
+            player.sendMessage("§cTag non valido: " + tagMinLength + "-" + tagMaxLength
+                    + " caratteri, solo lettere e numeri.");
             return;
         }
 

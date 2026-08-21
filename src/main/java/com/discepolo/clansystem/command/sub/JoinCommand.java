@@ -56,4 +56,9 @@ public class JoinCommand implements SubCommand {
                 + " §a[§e" + clan.getTag() + "§a]!");
         clan.broadcastMessage("§e" + player.getName() + " §asi è unito al clan!");
     }
+
+    @Override
+    public boolean isHidden() {
+        return true;
+    }
 }

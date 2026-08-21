@@ -65,4 +65,9 @@ public class UnclaimCommand implements SubCommand {
             clan.broadcastMessage("§7La home del clan è stata rimossa (territorio unclaimato).");
         }
     }
+
+    @Override
+    public boolean isHidden() {
+        return true;
+    }
 }

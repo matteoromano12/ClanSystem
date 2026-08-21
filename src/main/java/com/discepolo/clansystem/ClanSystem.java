@@ -4,6 +4,7 @@ import com.discepolo.clansystem.clan.Clan;
 import com.discepolo.clansystem.clan.ClanRole;
 import com.discepolo.clansystem.command.ClanCommand;
 import com.discepolo.clansystem.command.sub.*;
+import com.discepolo.clansystem.config.ProtectionSettings;
 import com.discepolo.clansystem.database.ClanRepository;
 import com.discepolo.clansystem.database.DatabaseManager;
 import com.discepolo.clansystem.listener.ClaimProtectionListener;
@@ -38,13 +39,15 @@ public final class ClanSystem extends JavaPlugin {
             return;
         }
 
-
+        long inviteTimeout = getConfig().getLong("clan.invite-timeout-seconds", 60) * 1000L;
+        long confirmTimeout = getConfig().getLong("clan.confirm-timeout-seconds", 30) * 1000L;
+        int homeDelay = getConfig().getInt("home.teleport-delay-seconds", 5);
 
         clanRepository = new ClanRepository(databaseManager, getLogger());
 
         clanManager = new ClanManager(this, clanRepository);
         claimManager = new ClaimManager(this, clanRepository, getConfig().getInt("claims.max-per-clan", 6));
-        inviteManager = new InviteManager();
+        inviteManager = new InviteManager(inviteTimeout);
         chatManager = new ChatManager();
         teleportManager = new TeleportManager();
 
@@ -56,26 +59,28 @@ public final class ClanSystem extends JavaPlugin {
         ClanRole buildRole = parseRole(getConfig().getString("claims.build-role", "LEADER"), ClanRole.LEADER);
         ClanRole interactRole = parseRole(getConfig().getString("claims.interact-role", "MEMBER"), ClanRole.MEMBER);
 
+        ProtectionSettings protections = new ProtectionSettings(getConfig());
+
         ClanCommand router = new ClanCommand();
-        router.register(new CreateCommand(clanManager));
-        router.register(new DisbandCommand(clanManager, claimManager));
+        router.register(new CreateCommand(clanManager, getConfig()));
+        router.register(new DisbandCommand(clanManager, claimManager, confirmTimeout));
         router.register(new InviteCommand(clanManager, inviteManager));
         router.register(new JoinCommand(clanManager, inviteManager));
         router.register(new KickCommand(clanManager));
         router.register(new PromoteCommand(clanManager));
         router.register(new DemoteCommand(clanManager));
         router.register(new LeaveCommand(clanManager));
-        router.register(new TransferCommand(clanManager));
+        router.register(new TransferCommand(clanManager, confirmTimeout));
         router.register(new InfoCommand(clanManager));
         router.register(new ClaimCommand(clanManager, claimManager));
         router.register(new UnclaimCommand(clanManager, claimManager));
         router.register(new SetHomeCommand(clanManager, claimManager));
-        router.register(new HomeCommand(this, clanManager, teleportManager));
+        router.register(new HomeCommand(this, clanManager, teleportManager, homeDelay));
         router.register(new ChunksCommand(clanManager, claimManager));
 
         ChatCommand chatCommand = new ChatCommand(clanManager, chatManager);
         router.register(chatCommand);
-        
+
         getCommand("clan").setExecutor(router);
         getCommand("clan").setTabCompleter(router);
 
@@ -91,7 +96,7 @@ public final class ClanSystem extends JavaPlugin {
         getServer().getPluginManager().registerEvents(
                 new ClanChatListener(clanManager, chatManager), this);
         getServer().getPluginManager().registerEvents(
-                new ClaimProtectionListener(claimManager, buildRole, interactRole), this);
+                new ClaimProtectionListener(claimManager, buildRole, interactRole, protections), this);
         getServer().getPluginManager().registerEvents(
                 new TeleportCancelListener(teleportManager), this);
 

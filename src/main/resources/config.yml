@@ -5,7 +5,31 @@ database:
   user: clansystem
   password: "clanpass"
   pool-size: 8
+
+clan:
+  name-min-length: 3
+  name-max-length: 16
+  tag-min-length: 2
+  tag-max-length: 5
+  invite-timeout-seconds: 60
+  confirm-timeout-seconds: 30
+
 claims:
   max-per-clan: 6
   build-role: LEADER
   interact-role: MEMBER
+
+home:
+  teleport-delay-seconds: 5
+  cancel-on-move: true
+
+protections:
+  build: true
+  interact: true
+  pvp: true
+  mob-spawning: true
+  explosions: true
+  buckets: true
+  entities: true
+  fire-spread: true
+  trampling: true

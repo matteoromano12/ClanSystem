@@ -15,7 +15,7 @@ import java.util.UUID;
 
 public class TransferCommand implements SubCommand {
 
-    private static final long CONFIRM_TIMEOUT_MS = 30_000;
+    private final long confirmTimeoutMs;
 
     private final ClanManager clanManager;
 
@@ -23,8 +23,9 @@ public class TransferCommand implements SubCommand {
 
     private record PendingTransfer(UUID target, long timestamp) {}
 
-    public TransferCommand(ClanManager clanManager) {
+    public TransferCommand(ClanManager clanManager, long confirmTimeoutMs) {
         this.clanManager = clanManager;
+        this.confirmTimeoutMs = confirmTimeoutMs;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class TransferCommand implements SubCommand {
 
         boolean confirmed = request != null
                 && request.target().equals(target.getUuid())
-                && now - request.timestamp() <= CONFIRM_TIMEOUT_MS;
+                && now - request.timestamp() <= confirmTimeoutMs;
 
         if (!confirmed) {
             pending.put(player.getUniqueId(), new PendingTransfer(target.getUuid(), now));

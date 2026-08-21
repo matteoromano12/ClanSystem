@@ -15,16 +15,17 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class HomeCommand implements SubCommand {
 
-    private static final int COUNTDOWN_SECONDS = 5;
+    private final int countdownSeconds;
 
     private final ClanSystem plugin;
     private final ClanManager clanManager;
     private final TeleportManager teleportManager;
 
-    public HomeCommand(ClanSystem plugin, ClanManager clanManager, TeleportManager teleportManager) {
+    public HomeCommand(ClanSystem plugin, ClanManager clanManager, TeleportManager teleportManager, int countdownSeconds) {
         this.plugin = plugin;
         this.clanManager = clanManager;
         this.teleportManager = teleportManager;
+        this.countdownSeconds = countdownSeconds;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class HomeCommand implements SubCommand {
         Location destination = clan.getHome();
 
         BukkitTask task = new BukkitRunnable() {
-            int remaining = COUNTDOWN_SECONDS;
+            int remaining = countdownSeconds;
 
             @Override
             public void run() {

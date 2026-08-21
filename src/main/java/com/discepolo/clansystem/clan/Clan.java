@@ -14,11 +14,16 @@ public class Clan {
     private final Map<UUID, ClanMember> members = new HashMap<>();
     private final Set<ClaimedChunk> claims = new HashSet<>();
     private Location home;
-    private final long createdAt = System.currentTimeMillis();
+    private final long createdAt;
 
-    public Clan(String name, String tag) {
+    public Clan(String name, String tag, long createdAt) {
         this.name = name;
         this.tag = tag;
+        this.createdAt = createdAt;
+    }
+
+    public Clan(String name, String tag) {
+        this(name, tag, System.currentTimeMillis());
     }
 
     public String getName() {

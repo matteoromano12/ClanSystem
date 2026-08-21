@@ -6,10 +6,13 @@ import java.util.UUID;
 
 public class InviteManager {
 
-    private static final long INVITE_TIMEOUT_MS = 60_000;
+    private final long inviteTimeoutMs;
 
-    //(nome clan → timestamp dell'invito
     private final Map<UUID, Map<String, Long>> invites = new HashMap<>();
+
+    public InviteManager(long inviteTimeoutMs) {
+        this.inviteTimeoutMs = inviteTimeoutMs;
+    }
 
     public void addInvite(UUID invited, String clanName) {
         invites.computeIfAbsent(invited, k -> new HashMap<>())
@@ -33,7 +36,7 @@ public class InviteManager {
         Long timestamp = playerInvites.get(clanName.toLowerCase());
         if (timestamp == null) return false;
 
-        return System.currentTimeMillis() - timestamp <= INVITE_TIMEOUT_MS;
+        return System.currentTimeMillis() - timestamp <= inviteTimeoutMs;
     }
 
     public void clearInvites(UUID invited) {
