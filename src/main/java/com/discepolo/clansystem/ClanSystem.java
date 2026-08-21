@@ -71,11 +71,13 @@ public final class ClanSystem extends JavaPlugin {
         router.register(new UnclaimCommand(clanManager, claimManager));
         router.register(new SetHomeCommand(clanManager, claimManager));
         router.register(new HomeCommand(this, clanManager, teleportManager));
+        router.register(new ChunksCommand(clanManager, claimManager));
 
         ChatCommand chatCommand = new ChatCommand(clanManager, chatManager);
         router.register(chatCommand);
-
+        
         getCommand("clan").setExecutor(router);
+        getCommand("clan").setTabCompleter(router);
 
         getCommand("clanchat").setExecutor((sender, cmd, label, args) -> {
             if (sender instanceof Player p) {

@@ -3,14 +3,12 @@ package com.discepolo.clansystem.command;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class ClanCommand implements CommandExecutor {
+public class ClanCommand implements CommandExecutor, TabCompleter {
 
     private final Map<String, SubCommand> subCommands = new HashMap<>();
 
@@ -47,5 +45,23 @@ public class ClanCommand implements CommandExecutor {
                 player.sendMessage("§e" + sub.getUsage());
             }
         }
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!(sender instanceof Player player)) return List.of();
+
+        if (args.length == 1) {
+            return subCommands.keySet().stream()
+                    .filter(name -> name.startsWith(args[0].toLowerCase()))
+                    .sorted()
+                    .toList();
+        }
+
+
+        SubCommand sub = subCommands.get(args[0].toLowerCase());
+        if (sub == null) return List.of();
+
+        return sub.tabComplete(player, Arrays.copyOfRange(args, 1, args.length));
     }
 }

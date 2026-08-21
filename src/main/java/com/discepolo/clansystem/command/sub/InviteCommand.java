@@ -14,6 +14,8 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import java.util.List;
+
 public class InviteCommand implements SubCommand {
 
     private final ClanManager clanManager;
@@ -83,5 +85,18 @@ public class InviteCommand implements SubCommand {
                         .hoverEvent(HoverEvent.showText(
                                 Component.text("Entra in " + clan.getName(), NamedTextColor.GRAY)))
         );
+    }
+
+    @Override
+    public List<String> tabComplete(Player player, String[] args) {
+        if (args.length != 1) return List.of();
+
+        return Bukkit.getOnlinePlayers().stream()
+                .filter(p -> !p.equals(player))
+                .filter(p -> clanManager.getClanByPlayer(p.getUniqueId()) == null)
+                .map(Player::getName)
+                .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
+                .sorted()
+                .toList();
     }
 }

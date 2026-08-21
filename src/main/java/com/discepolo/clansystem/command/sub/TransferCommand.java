@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -96,5 +97,20 @@ public class TransferCommand implements SubCommand {
             targetPlayer.sendMessage("§6" + player.getName()
                     + " §eti ha trasferito il clan. Ora sei il §6Leader§e!");
         }
+    }
+
+    @Override
+    public List<String> tabComplete(Player player, String[] args) {
+        if (args.length != 1) return List.of();
+
+        Clan clan = clanManager.getClanByPlayer(player.getUniqueId());
+        if (clan == null) return List.of();
+
+        return clan.getMembers().stream()
+                .map(ClanMember::getLastKnownName)
+                .filter(name -> !name.equals(player.getName()))
+                .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
+                .sorted()
+                .toList();
     }
 }

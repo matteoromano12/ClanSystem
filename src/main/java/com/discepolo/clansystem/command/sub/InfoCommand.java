@@ -67,4 +67,15 @@ public class InfoCommand implements SubCommand {
             }
         }
     }
+
+    @Override
+    public List<String> tabComplete(Player player, String[] args) {
+        if (args.length != 1) return List.of();
+
+        return clanManager.getClans().stream()
+                .map(Clan::getName)
+                .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
+                .sorted()
+                .toList();
+    }
 }

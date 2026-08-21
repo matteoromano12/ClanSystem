@@ -8,6 +8,8 @@ import com.discepolo.clansystem.manager.ClanManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.List;
+
 public class KickCommand implements SubCommand {
 
     private final ClanManager clanManager;
@@ -67,5 +69,20 @@ public class KickCommand implements SubCommand {
         if (targetPlayer != null) {
             targetPlayer.sendMessage("§cSei stato espulso dal clan §e" + clan.getName() + "§c.");
         }
+    }
+
+    @Override
+    public List<String> tabComplete(Player player, String[] args) {
+        if (args.length != 1) return List.of();
+
+        Clan clan = clanManager.getClanByPlayer(player.getUniqueId());
+        if (clan == null) return List.of();
+
+        return clan.getMembers().stream()
+                .map(ClanMember::getLastKnownName)
+                .filter(name -> !name.equals(player.getName()))
+                .filter(name -> name.toLowerCase().startsWith(args[0].toLowerCase()))
+                .sorted()
+                .toList();
     }
 }

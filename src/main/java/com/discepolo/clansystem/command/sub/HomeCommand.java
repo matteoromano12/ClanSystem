@@ -31,7 +31,7 @@ public class HomeCommand implements SubCommand {
     public String getName() { return "home"; }
 
     @Override
-    public String getUsage() { return "/clan home"; }
+    public String getUsage() { return "/clan home - Teletrasportati alla home del clan"; }
 
     @Override
     public void execute(Player player, String[] args) {

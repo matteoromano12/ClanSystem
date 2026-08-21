@@ -23,7 +23,7 @@ public class ChatCommand implements SubCommand {
 
     @Override
     public String getUsage() {
-        return "/clan chat [messaggio]";
+        return "/clan chat [messaggio] - invia un messaggio al clan";
     }
 
     @Override
