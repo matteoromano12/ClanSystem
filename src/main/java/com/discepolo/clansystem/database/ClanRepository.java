@@ -3,9 +3,14 @@ package com.discepolo.clansystem.database;
 import com.discepolo.clansystem.clan.Clan;
 import com.discepolo.clansystem.clan.ClaimedChunk;
 import com.discepolo.clansystem.clan.ClanMember;
+import com.discepolo.clansystem.clan.ClanRole;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,6 +159,81 @@ public class ClanRepository {
             ps.executeUpdate();
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Errore nell'eliminazione del claim", e);
+        }
+    }
+
+    public Map<Integer, Clan> loadClans() {
+        Map<Integer, Clan> result = new HashMap<>();
+        String sql = "SELECT * FROM clans";
+
+        try (Connection conn = database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Clan clan = new Clan(rs.getString("name"), rs.getString("tag"));
+                clan.setId(rs.getInt("id"));
+
+                String worldName = rs.getString("home_world");
+                if (worldName != null) {
+                    World world = Bukkit.getWorld(worldName);
+                    if (world != null) {
+                        clan.setHome(new Location(world,
+                                rs.getDouble("home_x"), rs.getDouble("home_y"), rs.getDouble("home_z"),
+                                rs.getFloat("home_yaw"), rs.getFloat("home_pitch")));
+                    }
+                }
+
+                result.put(clan.getId(), clan);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Errore nel caricamento dei clan", e);
+        }
+        return result;
+    }
+
+    public void loadMembers(Map<Integer, Clan> clansById, Map<UUID, Clan> clansByPlayer) {
+        String sql = "SELECT * FROM clan_members";
+
+        try (Connection conn = database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Clan clan = clansById.get(rs.getInt("clan_id"));
+                if (clan == null) continue;
+
+                UUID uuid = UUID.fromString(rs.getString("uuid"));
+                ClanRole role = ClanRole.valueOf(rs.getString("role"));
+
+                clan.addMember(new ClanMember(uuid, rs.getString("name"), role));
+                clansByPlayer.put(uuid, clan);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Errore nel caricamento dei membri", e);
+        }
+    }
+
+
+    public void loadClaims(Map<Integer, Clan> clansById, Map<ClaimedChunk, Clan> claimsIndex) {
+        String sql = "SELECT * FROM clan_claims";
+
+        try (Connection conn = database.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Clan clan = clansById.get(rs.getInt("clan_id"));
+                if (clan == null) continue;
+
+                ClaimedChunk chunk = new ClaimedChunk(
+                        rs.getString("world"), rs.getInt("chunk_x"), rs.getInt("chunk_z"));
+
+                clan.addClaim(chunk);
+                claimsIndex.put(chunk, clan);
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Errore nel caricamento dei territori", e);
         }
     }
 }

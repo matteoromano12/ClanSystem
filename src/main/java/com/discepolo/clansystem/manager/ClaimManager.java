@@ -55,4 +55,12 @@ public class ClaimManager {
         }
         clan.getClaims().clear();
     }
+
+    public void loadFromDatabase(Map<Integer, Clan> clansById) {
+        repository.loadClaims(clansById, claims);
+    }
+
+    public int getClaimCount() {
+        return claims.size();
+    }
 }

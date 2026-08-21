@@ -98,4 +98,17 @@ public class ClanManager {
         int id = clan.getId();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> repository.updateHome(id, home));
     }
+
+    public Map<Integer, Clan> loadFromDatabase() {
+        Map<Integer, Clan> clansById = repository.loadClans();
+        for (Clan clan : clansById.values()) {
+            clansByName.put(clan.getName().toLowerCase(), clan);
+        }
+        repository.loadMembers(clansById, clansByPlayer);
+        return clansById;
+    }
+
+    public int getClanCount() {
+        return clansByName.size();
+    }
 }

@@ -1,5 +1,6 @@
 package com.discepolo.clansystem;
 
+import com.discepolo.clansystem.clan.Clan;
 import com.discepolo.clansystem.clan.ClanRole;
 import com.discepolo.clansystem.command.ClanCommand;
 import com.discepolo.clansystem.command.sub.*;
@@ -11,6 +12,8 @@ import com.discepolo.clansystem.listener.TeleportCancelListener;
 import com.discepolo.clansystem.manager.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
 
 public final class ClanSystem extends JavaPlugin {
 
@@ -35,6 +38,7 @@ public final class ClanSystem extends JavaPlugin {
         }
 
 
+
         clanRepository = new ClanRepository(databaseManager, getLogger());
 
         clanManager = new ClanManager(this, clanRepository);
@@ -42,6 +46,11 @@ public final class ClanSystem extends JavaPlugin {
         inviteManager = new InviteManager();
         chatManager = new ChatManager();
         teleportManager = new TeleportManager();
+
+        Map<Integer, Clan> clansById = clanManager.loadFromDatabase();
+        claimManager.loadFromDatabase(clansById);
+        getLogger().info("Caricati " + clanManager.getClanCount() + " clan e "
+                + claimManager.getClaimCount() + " territori.");
 
         ClanRole buildRole = parseRole(getConfig().getString("claims.build-role", "LEADER"), ClanRole.LEADER);
         ClanRole interactRole = parseRole(getConfig().getString("claims.interact-role", "MEMBER"), ClanRole.MEMBER);
