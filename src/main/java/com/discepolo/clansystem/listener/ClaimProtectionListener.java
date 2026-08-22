@@ -16,16 +16,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.block.*;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -269,5 +264,27 @@ public class ClaimProtectionListener implements Listener {
 
     private void deny(Player player, String message) {
         player.sendActionBar(Component.text(message, NamedTextColor.RED));
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onFluidFlow(BlockFromToEvent event) {
+        if (!settings.isBuckets()) return;
+
+        Chunk fromChunk = event.getBlock().getChunk();
+        Chunk toChunk = event.getToBlock().getChunk();
+
+        if (fromChunk.getX() == toChunk.getX()
+                && fromChunk.getZ() == toChunk.getZ()
+                && fromChunk.getWorld().equals(toChunk.getWorld())) {
+            return;
+        }
+
+        Clan to = claimManager.getOwner(ClaimedChunk.fromChunk(toChunk));
+        if (to == null) return;
+
+        Clan from = claimManager.getOwner(ClaimedChunk.fromChunk(fromChunk));
+        if (to != from) {
+            event.setCancelled(true);
+        }
     }
 }
